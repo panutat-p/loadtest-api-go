@@ -5,29 +5,46 @@ import (
 	"sync/atomic"
 
 	"github.com/caarlos0/env"
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/time/rate"
 
 	"loadtest-api-go/internal"
+	"loadtest-api-go/pkg"
 )
 
 func main() {
-	var conf internal.Config
-	err := env.Parse(&conf)
+	err := godotenv.Load()
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("conf: %+v\n", conf)
+
+	var conf internal.Config
+	err = env.Parse(&conf)
+	if err != nil {
+		panic(err)
+	}
+	pkg.PrintJSON(conf)
+
+	if conf.Port == 0 {
+		panic("PORT is required")
+	}
+	if conf.Rate == 0 {
+		panic("RATE is required")
+	}
+	if conf.Burst == 0 {
+		panic("BURST is required")
+	}
 
 	var counter atomic.Uint64
-	r1 := rate.NewLimiter(1, 5)
+	r1 := rate.NewLimiter(rate.Limit(conf.Rate), conf.Burst)
 
 	h := internal.NewHandler(&counter, r1)
 
 	e := echo.New()
+	e.GET("/", h.Health)
 	e.GET("/fruits", h.ListFruits)
 
-	conf.Port = 8080
 	err = e.Start(fmt.Sprintf(":%d", conf.Port))
 	if err != nil {
 		panic(err)

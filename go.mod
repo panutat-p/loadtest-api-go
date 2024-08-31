@@ -4,6 +4,7 @@ go 1.23.0
 
 require (
 	github.com/caarlos0/env v3.5.0+incompatible
+	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.12.0
 	golang.org/x/time v0.6.0
 )

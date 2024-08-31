@@ -20,12 +20,27 @@ func NewHandler(counter *atomic.Uint64, r1 *rate.Limiter) *Handler {
 	}
 }
 
-type ResponseFruit struct {
-	Count uint64   `json:"count"`
-	Fruit []string `json:"fruit"`
+func (h *Handler) Health(c echo.Context) error {
+	return c.JSON(
+		http.StatusOK,
+		map[string]any{
+			"message": "running",
+		},
+	)
 }
 
 func (h *Handler) ListFruits(c echo.Context) error {
+	if !h.limiter.Allow() {
+		return c.JSON(
+			http.StatusTooManyRequests,
+			ResponseError{
+				Count: h.counter.Load(),
+				Token: h.limiter.Tokens(),
+				Error: "Too many requests",
+			},
+		)
+	}
+
 	n := h.counter.Add(1)
 
 	fruits := []string{
@@ -56,9 +71,9 @@ func (h *Handler) ListFruits(c echo.Context) error {
 	}
 	return c.JSON(
 		http.StatusOK,
-		ResponseFruit{
+		ResponseSuccess{
 			Count: n,
-			Fruit: fruits,
+			Data:  fruits,
 		},
 	)
 }
