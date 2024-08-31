@@ -1,6 +1,10 @@
 package internal
 
-var ErrTooManyRequests = "Too many requests"
+import (
+	"errors"
+)
+
+var ErrTooManyRequests = errors.New("too many requests")
 
 type ResponseSuccess struct {
 	Count uint64 `json:"count"`
@@ -10,5 +14,5 @@ type ResponseSuccess struct {
 type ResponseError struct {
 	Count uint64  `json:"count"`
 	Token float64 `json:"token"`
-	Error string  `json:"error"`
+	Error error   `json:"error"`
 }

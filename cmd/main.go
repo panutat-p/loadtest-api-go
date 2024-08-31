@@ -7,7 +7,6 @@ import (
 	"github.com/caarlos0/env"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
-	"golang.org/x/time/rate"
 
 	"loadtest-api-go/internal"
 	"loadtest-api-go/pkg"
@@ -28,13 +27,12 @@ func main() {
 	conf.Validate()
 
 	var counter atomic.Uint64
-	r1 := rate.NewLimiter(rate.Limit(conf.Rate), conf.Burst)
-
-	h := internal.NewHandler(&counter, r1)
+	h := internal.NewHandler(&counter)
+	limiter := internal.RateLimiter(&counter, conf.Rate, conf.Burst)
 
 	e := echo.New()
 	e.GET("/", h.Health)
-	e.GET("/fruits", h.ListFruits)
+	e.GET("/fruits", h.ListFruits, limiter)
 
 	err = e.Start(fmt.Sprintf(":%d", conf.Port))
 	if err != nil {
