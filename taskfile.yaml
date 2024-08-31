@@ -4,7 +4,7 @@ tasks:
 
   dev:
     cmds:
-      - go run main.go
+      - go run cmd/main.go
 
   install:
     cmds:
@@ -13,4 +13,4 @@ tasks:
   lint:
     cmds:
       - gofmt -l -w .
-      - gci write -s standard -s default -s 'prefix(github.com/panutat-p)' -s localmodule .
+      - gci write -s standard -s default -s 'prefix(loadtest-api-go)' -s localmodule .
