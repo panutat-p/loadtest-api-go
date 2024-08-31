@@ -25,16 +25,7 @@ func main() {
 		panic(err)
 	}
 	pkg.PrintJSON(conf)
-
-	if conf.Port == 0 {
-		panic("PORT is required")
-	}
-	if conf.Rate == 0 {
-		panic("RATE is required")
-	}
-	if conf.Burst == 0 {
-		panic("BURST is required")
-	}
+	conf.Validate()
 
 	var counter atomic.Uint64
 	r1 := rate.NewLimiter(rate.Limit(conf.Rate), conf.Burst)
