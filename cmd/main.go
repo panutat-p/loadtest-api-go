@@ -27,8 +27,8 @@ func main() {
 	conf.Validate()
 
 	var counter atomic.Uint64
-	h := internal.NewHandler(&counter)
-	limiter := internal.RateLimiter(&counter, conf.Rate, conf.Burst)
+	h := internal.NewHandler(&conf, &counter)
+	limiter := internal.RateLimiter(&conf, &counter, conf.Rate, conf.Burst)
 
 	e := echo.New()
 	e.GET("/", h.Health)

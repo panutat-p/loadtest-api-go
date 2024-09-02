@@ -6,6 +6,11 @@ import (
 
 var ErrTooManyRequests = errors.New("too many requests")
 
+type ResponseHealth struct {
+	Count   uint64 `json:"count"`
+	Message string `json:"message"`
+}
+
 type ResponseSuccess struct {
 	Count uint64 `json:"count"`
 	Data  any    `json:"data"`
