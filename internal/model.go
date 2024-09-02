@@ -12,12 +12,12 @@ type ResponseHealth struct {
 }
 
 type ResponseSuccess struct {
+	Code  int    `json:"code"`
 	Count uint64 `json:"count"`
 	Data  any    `json:"data"`
 }
 
 type ResponseError struct {
-	Count uint64  `json:"count"`
-	Token float64 `json:"token"`
-	Error error   `json:"error"`
+	Code    int    `json:"code"`
+	Message string `json:"message"`
 }

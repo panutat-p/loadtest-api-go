@@ -44,6 +44,8 @@ func (h *Handler) ListFruits(c echo.Context) error {
 		"fig",
 		"grape",
 		"honeydew",
+		"imbe",
+		"jackfruit",
 		"kiwi",
 		"lemon",
 		"mango",
@@ -65,6 +67,7 @@ func (h *Handler) ListFruits(c echo.Context) error {
 	return c.JSON(
 		http.StatusOK,
 		ResponseSuccess{
+			Code:  200,
 			Count: n,
 			Data:  fruits,
 		},

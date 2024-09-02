@@ -28,7 +28,7 @@ func main() {
 
 	var counter atomic.Uint64
 	h := internal.NewHandler(&conf, &counter)
-	limiter := internal.RateLimiter(&conf, &counter, conf.Rate, conf.Burst)
+	limiter := internal.RateLimiter(&conf, conf.Rate, conf.Burst)
 
 	e := echo.New()
 	e.GET("/", h.Health)

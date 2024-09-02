@@ -3,14 +3,13 @@ package internal
 import (
 	"fmt"
 	"net/http"
-	"sync/atomic"
 	"time"
 
 	"github.com/labstack/echo/v4"
 	"golang.org/x/time/rate"
 )
 
-func RateLimiter(conf *Config, counter *atomic.Uint64, r, b int) echo.MiddlewareFunc {
+func RateLimiter(conf *Config, r, b int) echo.MiddlewareFunc {
 	limiter := rate.NewLimiter(rate.Limit(r), b)
 
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
@@ -21,9 +20,8 @@ func RateLimiter(conf *Config, counter *atomic.Uint64, r, b int) echo.Middleware
 				return c.JSON(
 					http.StatusTooManyRequests,
 					ResponseError{
-						Count: counter.Load(),
-						Token: limiter.Tokens(),
-						Error: ErrTooManyRequests,
+						Code:    429,
+						Message: ErrTooManyRequests.Error(),
 					},
 				)
 			}
